@@ -1,0 +1,74 @@
+import re
+import dns.resolver
+import time
+import socket
+from email.mime.text import MIMEText
+import smtplib
+print ("""\033[0;35;40m
+      ===========================
+            CREATED BY ABDX
+      ===========================""")
+      
+Username=raw_input("Enter Your Username => ")
+    
+print "Welcome", Username
+EMail=raw_input("Enter Your E-Mail => ")
+print ("""\033[0;31;40m
+
+     ============================================
+     PLEASE WAIT THE SERVER VERFICATE YOUR EMAIL
+     ============================================
+     
+     """)
+addressToVerify = 'info@emailhippo.com'
+match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', addressToVerify)
+    
+if match == None:
+    print('Error :(')
+    raise ValueError('Error Please Retry :(')
+records = dns.resolver.query('emailhippo.com', 'MX')
+mxRecord = records[0].exchange
+mxRecord = str(mxRecord)
+# Get local server hostname
+host = socket.gethostname()
+
+# SMTP lib setup (use debug level for full output)
+server = smtplib.SMTP()
+server.set_debuglevel(0)
+
+# SMTP Conversation
+server.connect(mxRecord)
+server.helo(host)
+server.mail('me@domain.com')
+code, message = server.rcpt(str(addressToVerify))
+server.quit()
+
+# Assume 250 as Success
+if code == 250:
+	print('Success To Find Your Email')
+else:
+	print('Error, Email Not Founded, Please Retry ')
+ # Import the email modules we'll need
+
+
+# Open a plain text file for reading.  For this example, assume that
+# the text file contains only ASCII characters.
+fp = open(textfile, 'rb')
+# Create a text/plain message
+msg = MIMEText(fp.read())
+fp.close()
+
+# me == the sender's email address
+# you == the recipient's email address
+msg['SignUp'] = 'The contents of %s' % textfile
+msg['AbidouAdmin'] = me
+msg[EMail] = you
+
+# Send the message via our own SMTP server, but don't include the
+# envelope header.
+s = smtplib.SMTP('localhost')
+s.sendmail(me, [you], msg.as_string())
+s.quit()
+
+ 
+ 
